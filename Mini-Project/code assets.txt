@@ -1,0 +1,94 @@
+    
+// Variables
+	public static Institution Esi = null;     // variable of Type Institution to store the hard coded Institution
+    public static ArrayList<TP_Salle> salles = new ArrayList<>();  // List of salles to store the hard coded TP salles
+    int Current_Salle_TP_Index;  // an integer variable to store selected TP salle index from ui 
+
+// Methods
+
+    public static void Institution_init() {
+        String logo = "https://www.esi-sba.dz/fr/wp-content/uploads/2020/10/Logo-Complet-ESI-SBA-200mm-x-200mm_couleur-500x500.png";
+        // create the Esi-sba institution
+        Institution Esi = new Institution(0, "High School", "8 Mai 1945-Sidi-bel-abbes", "+21348749452 ", logo);
+        // create new department called second cycle
+        Department second_cycle = new Department(0, "second cycle", "code", "Amrane abdelkader", "contact_sc@esi-sba.dz");
+        
+        Department preparatory_class = new Department(1, "preparatory class", "code", "Aced", "contact_pre@esi-sba.dz");
+        Department departements[] = {preparatory_class, second_cycle};
+        // add the second cycle department to Esi institution
+
+        // creation of one service the teaching service
+        Service TeachingServise = new Service_Teaching();
+        // creation of one block that will holds the salles or even Amphis
+        Block block_A1 = new Block("A1", "left", "white");
+        // creation of one amphi called AmphiA
+        Amphitheater AmphiA = new Amphitheater(0, "Amphi D", 100.0, 1000, true);
+        second_cycle.setBlock(block_A1);
+        Esi.setDepartment(departements);
+
+        Main_Home.Esi = Esi;
+    }  
+
+    public static void Tp_salles_init() {
+        TP_Salle Salle_TP = new TP_Salle("20 Tables", 0, "Salle TP 01", 20.0, 20);
+        // creating of set of computers and one datashow
+        Materials PC1 = new PC("i7", "16G", "AC255-GGH-20", "03-01-2022");
+        Materials PC2 = new PC("i5", "32G", "AC2F5-ALH-15", "03-01-2022");
+        Materials PC3 = new PC("i3", "4G", "ACHK5-HGH-19", "03-01-2022");
+        Materials PC4 = new PC("i9", "16G", "DFRTG-DGE-17", "03-01-2022");
+        Materials datashow = new Datashow("Epson", "1122352512", "03-01-2022");
+        Materials printer = new Printer("1122352512", "03-01-2022");
+        // add the matiriels to our Tp salle
+        Salle_TP.add_material_to_TPSalle(PC1);
+        Salle_TP.add_material_to_TPSalle(PC2);
+        Salle_TP.add_material_to_TPSalle(PC3);
+        Salle_TP.add_material_to_TPSalle(PC4);
+        Salle_TP.add_material_to_TPSalle(datashow);
+        Salle_TP.add_material_to_TPSalle(printer);
+        salles.add(Salle_TP);
+    }
+    
+    public void load_Departements() {
+        for (int i = 0; i < Esi.department.length; i++) {
+              DepartementCompobox.addItem(Esi.department[i].DepartementName);
+        }
+    }
+    
+    public static void load_Salles() {
+
+        DefaultListModel MyLstModel = new DefaultListModel();
+        for (TP_Salle salle : salles) {
+            MyLstModel.addElement(salle.building_name);
+        }
+        TP_Salles_Jlist.setModel(MyLstModel);
+    }
+
+    public static void print_salle_materials(ArrayList<Materials> tp_materials) {
+        DefaultTableModel model = (DefaultTableModel) Material_Table_Affiche.getModel();
+
+        if (tp_materials.isEmpty()) {
+            model.setRowCount(0);
+        } else {
+
+            model.setRowCount(tp_materials.size());
+            for (Materials tp_material : tp_materials) {
+                model.removeRow(0);
+                Object[] rowData = {tp_material.registration_number, tp_material.date_installtion, "", tp_material.Type};
+                model.addRow(rowData);
+                tp_material.print_material_infos();
+            }
+        }
+    }
+
+// constructor
+
+    public Main_Home() {
+        initComponents(); // Auto generate by NetBeans IDE
+        this.setLocationRelativeTo(null); // to show the frame on the middle of the screen
+        Institution_init(); // To initialize a hard-coded institution and department
+        load_Departements(); // To display the departement names  
+        Tp_salles_init(); // To initialize a dummy Tp salle 01 with its materials
+        load_Salles(); // To Display the existing (dummy salles) to their JList
+    }
+ 
+ 
